@@ -1,0 +1,42 @@
+package com.phone91.sdk.model
+
+import android.os.Parcel
+import android.os.Parcelable
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonProperty
+
+/**
+ * Created by richa WALK311 on 09/04/2020.
+ */
+
+//                    {"pubkey":"pub-c-7efeae95-f505-4c40-99c4-04015a415abe",
+//                        "subkey":"sub-c-41ea6378-7d3f-11e9-945c-2ea711aa6b65","authkey":"a6cfa71a1c774a5ab08e168fe17a0127"}
+
+//{"id":1587385161501,"content":"cccc","sender":"richa","type":"chat","attachment_url":"","mime_type":""}
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class CallStatusSignal(var callStatusChanged: String? = null) : Parcelable {
+
+    constructor(source: Parcel) : this(
+        source.readString()
+    )
+
+    override fun describeContents() = 0
+
+    override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
+        writeString(callStatusChanged)
+    }
+
+    companion object {
+
+        public val ENABLE="CALL_E"
+        public val DESABLE="CALL_D"
+        @JvmField
+        val CREATOR: Parcelable.Creator<CallStatusSignal> =
+            object : Parcelable.Creator<CallStatusSignal> {
+                override fun createFromParcel(source: Parcel): CallStatusSignal =
+                    CallStatusSignal(source)
+
+                override fun newArray(size: Int): Array<CallStatusSignal?> = arrayOfNulls(size)
+            }
+    }
+}

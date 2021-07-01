@@ -1,0 +1,319 @@
+<!--<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    app:cardBackgroundColor="@android:color/white"
+    app:cardElevation="10dp"
+    app:cardUseCompatPadding="true">-->
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:paddingBottom="5dp">
+
+       <!-- <ImageView
+
+            android:id="@+id/civUser"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="10dp"
+            android:src="@android:drawable/presence_busy"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />-->
+        <LinearLayout
+            android:id="@+id/llYou"
+            android:visibility="visible"
+            android:layout_width="wrap_content"
+            android:background="@drawable/chat_you"
+            android:orientation="vertical"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="60dp"
+            android:padding="10dp"
+            android:layout_height="wrap_content">
+
+        <TextView
+
+            android:text="sfsdhg"
+            android:typeface="monospace"
+            android:id="@+id/txtYou"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/chat_txt"
+            android:textSize="16sp"/>
+
+        <ImageView
+            android:visibility="gone"
+            android:scaleType="fitXY"
+            android:id="@+id/imgYou"
+            android:layout_below="@+id/txtYou"
+            android:layout_width="120dp"
+            android:layout_height="120dp"/>
+            <TextView
+                android:typeface="monospace"
+                android:id="@+id/txtYouTime"
+                android:visibility="visible"
+                android:layout_marginTop="3dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/time_txt"
+                android:textSize="8sp"/>
+
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:id="@+id/llMe"
+            android:visibility="visible"
+            android:layout_width="wrap_content"
+            android:background="@drawable/chat_me"
+            android:orientation="vertical"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="60dp"
+            android:padding="10dp"
+            android:layout_height="wrap_content">
+        <TextView
+
+            android:id="@+id/txtMe"
+            android:visibility="gone"
+            android:text="sfsdhg"
+            android:layout_below="@+id/imgMe"
+            android:typeface="monospace"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"/>
+        <ImageView
+            android:visibility="gone"
+            android:scaleType="fitXY"
+            android:id="@+id/imgMe"
+            android:layout_width="120dp"
+            android:layout_height="120dp"/>
+
+
+            <TextView
+                android:typeface="monospace"
+                android:id="@+id/txMeTime"
+                android:visibility="visible"
+                android:layout_gravity="right"
+                android:layout_marginTop="3dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/time_txt"
+                android:textSize="8sp"/>
+</LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:id="@+id/llDetail"
+            android:visibility="gone"
+            android:background="@drawable/chat_you"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="60dp"
+            android:padding="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:background="@drawable/white_bg_detail"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:padding="10dp"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/txtName"
+                    android:text="1.NAME"
+                    android:textColor="@color/text_color"
+                    android:textSize="15sp"
+                    android:typeface="monospace"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+                <LinearLayout
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:id="@+id/llName"
+                    android:background="@drawable/edit_bg_detail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <EditText
+                        android:background="@android:color/transparent"
+                        android:id="@+id/edName"
+                        android:textSize="16sp"
+                        android:padding="10dp"
+                        android:layout_weight="1"
+                        android:hint="Enter Name"
+                        android:typeface="monospace"
+                        android:nextFocusDown="@+id/edEmail"
+                        android:singleLine="true"
+                        android:imeOptions="actionGo"
+                        android:textColor="@android:color/black"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"/>
+                    <ImageView
+                        android:id="@+id/btnName"
+                        android:background="@drawable/blue_btn_detail"
+                        android:src="@drawable/arrow"
+                        android:padding="4dp"
+                        android:layout_width="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/txtEmail"
+                    android:text="2.MAIL"
+                    android:visibility="gone"
+                    android:textColor="@color/text_color"
+                    android:textSize="15sp"
+                    android:layout_marginTop="15dp"
+                    android:typeface="monospace"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:visibility="gone"
+                    android:id="@+id/llEmail"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/edit_bg_detail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <EditText
+                        android:id="@+id/edEmail"
+                        android:textSize="16sp"
+                        android:singleLine="true"
+                        android:hint="Enter Email"
+
+                        android:padding="10dp"
+                        android:layout_weight="1"
+                        android:nextFocusDown="@+id/edPhone"
+                        android:inputType="textEmailAddress"
+                        android:imeOptions="actionGo"
+                        android:textColor="@android:color/black"
+                        android:background="@android:color/transparent"
+                        android:typeface="monospace"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"/>
+                    <!--<ImageView
+                        android:id="@+id/btnEmail"
+                        android:background="@drawable/blue_btn_detail"
+                        android:src="@drawable/arrow"
+                        android:layout_width="35dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_height="35dp"/>-->
+                    <ImageView
+                        android:id="@+id/btnEmail"
+                        android:background="@drawable/blue_btn_detail"
+                        android:src="@drawable/arrow"
+                        android:padding="4dp"
+                        android:layout_width="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/txtNumber"
+                    android:text="3.NUMBER"
+                    android:visibility="gone"
+                    android:textColor="@color/text_color"
+                    android:textSize="15sp"
+                    android:layout_marginTop="15dp"
+                    android:typeface="monospace"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+                <LinearLayout
+                    android:visibility="gone"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:id="@+id/llPhone"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/edit_bg_detail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <EditText
+
+                        android:id="@+id/edPhone"
+                        android:inputType="number"
+                        android:textSize="16sp"
+                        android:singleLine="true"
+                        android:padding="10dp"
+                        android:imeOptions="actionGo"
+                        android:textColor="@android:color/black"
+                        android:hint="Enter Contact no"
+                        android:background="@android:color/transparent"
+                        android:typeface="monospace"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"/>
+                    <!--<ImageView
+                        android:id="@+id/btnPhone"
+                        android:background="@drawable/blue_btn_detail"
+                        android:src="@drawable/arrow"
+                        android:layout_width="35dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_height="35dp"/>-->
+                    <ImageView
+                        android:id="@+id/btnPhone"
+                        android:background="@drawable/blue_btn_detail"
+                        android:src="@drawable/arrow"
+                        android:padding="4dp"
+                        android:layout_width="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llCallMsg"
+            android:gravity="center"
+android:visibility="visible"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:background="@drawable/chat_signal_msg"
+                android:layout_width="wrap_content"
+                android:typeface="monospace"
+                android:id="@+id/txtSignal"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="7dp"
+                android:textSize="10sp"
+                android:text="gjggjggh"
+                android:textStyle="bold"
+                android:textColor="@color/chat_txt"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:typeface="monospace"
+                android:id="@+id/txtTime"
+                android:visibility="visible"
+                android:layout_marginTop="3dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/time_txt"
+                android:textSize="8sp"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+<!--</androidx.cardview.widget.CardView>-->

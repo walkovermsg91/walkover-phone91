@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Phone91SDK</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="support">Support</string>
+    <string name="enter_message">Enter your message</string>
+    <string name="error_message_invalid">Invaild Keys</string>
+    <string name="error_message_auth">Not a authorized Client</string>
+    <string name="choose">Choose from below options</string>
+
+    <string name="camera_select">Open Camera</string>
+    <string name="gallery_select">Open Gallery</string>
+    <string name="cancel">Cancel</string>
+    <string name="send">Send</string>
+
+    <string name="agent_crt_room">Wait!...Agent is creating room"</string>
+    <string name="agent_wait">Waiting for Agent response"</string>
+</resources>

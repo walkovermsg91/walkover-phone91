@@ -1,0 +1,2 @@
+include ':Phone91SDK'
+include ':app'

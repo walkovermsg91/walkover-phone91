@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#03DAC5</color>
+    <color name="colorchat">#bcdaff</color>
+    <color name="edit_color">#f6f7fa</color>
+    <color name="border_color">#e3e4e6</color>
+    <color name="btn_color">#5d9df4</color>
+    <color name="upper_color">#3e5dd5</color>
+    <color name="below_color">#eff4fc</color>
+    <color name="text_color">#7e899a</color>
+    <color name="bor_color">#ecedf0</color>
+    <color name="arrow_color">#cccccc</color>
+
+
+    <color name="chat_me">#bdeccd</color>
+    <color name="time_txt">#607c95</color>
+    <color name="chat_txt">#3e3f41</color>
+    <color name="cancel_txt">#FF0000</color>
+    <color name="answer_txt">#00FF00</color>
+
+    <color name="md_green_700">#388E3C</color>
+    <color name="md_red_700">#D32F2F</color>
+</resources>

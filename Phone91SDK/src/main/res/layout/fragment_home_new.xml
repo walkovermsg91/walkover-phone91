@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="match_parent">
+    <include
+        android:id="@+id/include"
+        layout="@layout/layout_toolbar" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:background="@color/upper_color"
+                android:layout_height="50dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:background="@color/below_color"
+                android:layout_height="match_parent"/>
+
+        </LinearLayout>
+        <FrameLayout
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:id="@+id/fl_dashboard_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            <!--app:layout_behavior="@string/appbar_scrolling_view_behavior">-->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:orientation="vertical"
+                android:paddingRight="10dp"
+                android:paddingBottom="10dp"
+                android:paddingTop="5dp"
+                android:paddingLeft="10dp">
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:padding="10dp"
+                    android:background="@drawable/white_rounded_bg1"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:id="@+id/ll"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:layout_height="wrap_content">
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:padding="5dp"
+                            android:id="@+id/imgBack"
+                            android:tint="@color/text_color"
+                            android:src="@drawable/back"
+                            />
+
+                        <TextView
+                           android:textStyle="bold"
+                            android:id="@+id/txtName"
+                            android:gravity="center"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:drawableLeft="@drawable/message"
+                            android:layout_marginLeft="5dp"
+                            android:drawablePadding="5dp"
+                            android:text="@string/support"
+                            android:textColor="@color/text_color"
+                            android:textSize="15sp"
+                            android:typeface="monospace" />
+
+                    </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvPosts"
+                        android:layout_marginTop="30dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:layout_constraintTop_toBottomOf="@+id/ll" />
+
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/ll1"
+                    android:padding="10dp"
+                    android:gravity="center"
+                    android:background="@drawable/white_bg"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@+id/attachment"
+                        android:layout_width="30dp"
+                        android:src="@drawable/link"
+                        android:layout_height="30dp"/>
+                    <EditText
+                        android:id="@+id/editMessage"
+                        android:background="@android:color/transparent"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:typeface="monospace"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:hint="@string/enter_message"
+                        android:textColor="@android:color/black"
+                        android:textSize="13sp"
+                        android:layout_height="30dp"/>
+                    <ImageView
+                        android:id="@+id/imgSend"
+                        android:layout_width="40dp"
+                        android:src="@drawable/send"
+
+                        android:layout_marginRight="10dp"
+                        android:layout_height="match_parent"/>
+                    <ImageView
+                    android:id="@+id/imgcall"
+                        android:visibility="gone"
+                    android:layout_width="40dp"
+                        android:tint="@android:color/black"
+                    android:src="@drawable/phone"
+                    android:layout_height="match_parent"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </FrameLayout>
+
+
+    </FrameLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:padding="10dp"
+        android:layout_margin="5dp"
+        android:background="@drawable/call_bg"
+        android:gravity="center"
+        android:id="@+id/llPanel"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_gravity="top"
+        android:layout_height="wrap_content">
+        <!--            <Button-->
+        <!--                android:id="@+id/btnCancel"-->
+        <!--                android:text="Cancel"-->
+        <!--                android:background="@color/cancel_txt"-->
+        <!--                android:textSize="16sp"-->
+        <!--                android:paddingTop="15dp"-->
+        <!--                android:paddingBottom="15dp"-->
+        <!--                android:textColor="@android:color/white"-->
+        <!--                android:layout_marginRight="10dp"-->
+        <!--                android:paddingLeft="25dp"-->
+        <!--                android:paddingRight="25dp"-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="wrap_content"/>-->
+
+        <ImageView
+            android:id="@+id/btnCancel"
+            android:layout_width="62dp"
+            android:layout_weight="1"
+            android:layout_height="62dp"
+            android:contentDescription="sd"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.1"
+            android:src="@drawable/ic_call_decline" />
+        <ImageView
+            android:layout_weight="1"
+            android:id="@+id/btnAnswer"
+            android:layout_width="62dp"
+            android:layout_height="62dp"
+            android:contentDescription="sd"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.1"
+            android:src="@drawable/ic_call_accept" />
+        <!--            <Button-->
+        <!--                android:id="@+id/btnAnswer"-->
+        <!--                android:text="Answer"-->
+        <!--                android:textColor="@android:color/white"-->
+        <!--                android:background="@color/answer_txt"-->
+        <!--                android:textSize="16sp"-->
+        <!--                android:paddingTop="15dp"-->
+        <!--                android:paddingBottom="15dp"-->
+        <!--                android:layout_marginLeft="10dp"-->
+        <!--                android:paddingLeft="25dp"-->
+        <!--                android:paddingRight="25dp"-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="wrap_content"/>-->
+    </LinearLayout>
+
+    <LinearLayout
+        android:padding="10dp"
+        android:layout_margin="5dp"
+        android:background="@drawable/call_bg"
+        android:gravity="center"
+        android:id="@+id/llPanelCall"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_gravity="bottom"
+        android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/txtMSG"
+                        android:text="@string/agent_wait"
+                        android:textSize="16sp"
+                        android:paddingTop="15dp"
+                        android:paddingBottom="15dp"
+                        android:typeface="monospace"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/black"
+                        android:layout_marginRight="10dp"
+                        android:paddingLeft="25dp"
+                        android:paddingRight="25dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+
+
+    </LinearLayout>
+
+</FrameLayout>
+
+
+

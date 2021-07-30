@@ -104,13 +104,17 @@ class DashboardActivityVM  constructor(var appDataManager: AppDataManager) : Vie
 //                    {"status":"Success","message":"channel created","body":{"id":104163,"channel":"ch-user-32.4f49ec6157494a93a56923984a4241e4",
 //                        "uuid":"06f32e87-2bb5-4a9e-99fb-09db27c7b555","last_read":null,"team_id":null,"name":"Lime Lobster","number":null,"mail":null,"unique_id":null,
 //                        "assigned_to":null,"is_closed":false}}
-                    if((value.code()==201 || value.code()==200)&& value.body()?.get("status")?.asString.equals("Success")) {
+                    if ((value.code() == 201 || value.code() == 200) && value.body()?.get("success")?.asString.equals("true")) {
 
 //            {"name":"Android","tagline":"SDK testing","teams":[{"id":93,"name":"Teating"}],"hide_launcher":false,"show_send_button":true,"show_close_button":true,"auto_focus":true}
                         if (value.body()?.toString()!!.startsWith("{")) {
                             Log.d("responce",value.body().toString())
-                            var channelObject = Gson().fromJson(value.body()?.get("body")?.asJsonObject, ChannelObject::class.java)
-
+                            var channelObject: ChannelObject;
+                            if (value.body()?.has("body")!!) {
+                                channelObject = Gson().fromJson(value.body()?.get("body")?.asJsonObject, ChannelObject::class.java)
+                            } else {
+                                channelObject = Gson().fromJson(value.body()?.get("data")?.asJsonObject, ChannelObject::class.java)
+                            }
                            if(channelObject.team_id==null)
                                channelObject.team_id=team_id
                             channelInfo.value = channelObject
@@ -149,7 +153,7 @@ class DashboardActivityVM  constructor(var appDataManager: AppDataManager) : Vie
 //                    {"status":"Success","message":"channel created","body":{"id":104163,"channel":"ch-user-32.4f49ec6157494a93a56923984a4241e4",
 //                        "uuid":"06f32e87-2bb5-4a9e-99fb-09db27c7b555","last_read":null,"team_id":null,"name":"Lime Lobster","number":null,"mail":null,"unique_id":null,
 //                        "assigned_to":null,"is_closed":false}}
-                    if(value.code()==200 && value.body()?.get("status")?.asString.equals("Success")||
+                    if (value.code() == 200 && value.body()?.get("status")?.asString.equals("Success") ||
                         value.body()?.get("success")?.asString.equals("true")) {
 
 //            {"name":"Android","tagline":"SDK testing","teams":[{"id":93,"name":"Teating"}],"hide_launcher":false,"show_send_button":true,"show_close_button":true,"auto_focus":true}

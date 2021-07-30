@@ -2,6 +2,7 @@ package com.phone91.sdk.data
 
 import android.app.Application
 import android.content.Context
+import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.phone91.sdk.data.database.DBManager
 import com.phone91.sdk.data.preference.AppPreferenceManager
@@ -218,7 +219,11 @@ override fun isFavouriteShow(teamid: String): Single<ChannelObject> {
 //            remoteDataManager.addPost(caption, location, image,publish_date,file_type,device_type,tagged_ids)
 
 
+    override fun sendTestMSG(msg :String): Observable<Response<JsonObject>> =
+        remoteDataManager.sendTestMSG(msg)
 
+    override fun sendImageMessage(msg :String,msg_type :String,attachment : JsonElement): Observable<Response<JsonObject>> =
+        remoteDataManager.sendImageMessage(msg,msg_type,attachment)
 
 
 

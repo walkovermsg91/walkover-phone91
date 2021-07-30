@@ -4,7 +4,9 @@ package com.phone91.sdk.data.remote
 //import com.phone91.sdk.model.ProfileObject
 
 import android.util.Log
+import android.webkit.MimeTypeMap
 import com.google.gson.Gson
+import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.phone91.sdk.data.preference.AppPreferenceManager
 import com.phone91.sdk.model.Channel
@@ -13,6 +15,7 @@ import io.reactivex.Observable
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.logging.HttpLoggingInterceptor
+import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -237,11 +240,6 @@ class RemoteDataManager  constructor(private val appPreferenceManager: AppPrefer
         if (iApiService== null) {
             initializeWebServer()
         }
-
-
-
-
-
         val jsonParams: HashMap<String?, Any?> = HashMap()
         if (channel != null)
             jsonParams.put("channel",channel)
@@ -264,22 +262,21 @@ class RemoteDataManager  constructor(private val appPreferenceManager: AppPrefer
         return iApiService!!.setClient(body,token)
     }
     override fun sendImage(imagePath :String): Observable<Response<JsonObject>> {
-        if (iApiService== null) {
+        if (iApiService == null) {
             initializeWebServer()
         }
         var image: MultipartBody.Part? = null
         if (imagePath != null) {
             val file = File(imagePath)
-            val fbody = RequestBody.create("image/*".toMediaTypeOrNull(), file)
+            //val fbody = RequestBody.create("image/*".toMediaTypeOrNull(), file)
+            val mimeType:String = getMimeType(imagePath)!!
+            val fbody = RequestBody.create(mimeType.toMediaTypeOrNull(), file)
             image = MultipartBody.Part.createFormData("attachment", file.name, fbody)
-
-
         }
-
-        var token=appPreferenceManager.getWidgetToken()!!
-        if(appPreferenceManager.getUUID()!=null)
-            token=token+":"+appPreferenceManager.getUUID()
-        return iApiService!!.sendImage(token,image)
+        var token = appPreferenceManager.getWidgetToken()!!
+        if (appPreferenceManager.getUUID() != null)
+            token = token + ":" + appPreferenceManager.getUUID()
+        return iApiService!!.sendImage("chat", token, image)
     }
 
 
@@ -293,7 +290,68 @@ class RemoteDataManager  constructor(private val appPreferenceManager: AppPrefer
             token=token+":"+appPreferenceManager.getUUID()
         return iApiService!!.callAPI(token,key)
     }
+    override fun sendTestMSG(msg: String): Observable<Response<JsonObject>> {
+        if (iApiService == null) {
+            initializeWebServer()
+        }
+        val jsonParams: HashMap<String?, Any?> = HashMap()
+        jsonParams.put("type", "widget")
+        jsonParams.put("message_type", "text")
+        jsonParams.put("chat_id", appPreferenceManager.getChatId())
 
+        val jsonParams1: HashMap<String?, Any?> = HashMap()
+        jsonParams1.put("text", msg)
+        val emptyStringArray = arrayOf<String>()
+        jsonParams1.put("attachment", emptyStringArray)
+        jsonParams.put("content", jsonParams1)
+        val body = RequestBody.create(
+            "application/json; charset=utf-8".toMediaTypeOrNull(),
+            JSONObject(jsonParams).toString()
+        )
+        var token = appPreferenceManager.getWidgetToken()!!
+        if (appPreferenceManager.getUUID() != null)
+            token = token + ":" + appPreferenceManager.getUUID()
+        return iApiService!!.sendTestMSG(body, token)
+    }
+
+    override fun sendImageMessage(
+        msg: String,
+        msg_type: String,
+        attachment: JsonElement
+    ): Observable<Response<JsonObject>> {
+        if (iApiService == null) {
+            initializeWebServer()
+        }
+        val jsonParams1 = JSONObject().
+        put("text", msg).
+        put("attachment",
+            JSONArray().put(JSONObject(attachment.asJsonObject.toString().replace("\\",""))))
+        val jsonParams=JSONObject()
+            .put("type", "widget")
+            .put("message_type", msg_type)
+            .put("chat_id", appPreferenceManager.getChatId())
+            .put("content", jsonParams1)
+
+        val body = RequestBody.create(
+            "application/json; charset=utf-8".toMediaTypeOrNull(),
+            jsonParams.toString()
+        )
+
+        var token = appPreferenceManager.getWidgetToken()!!
+        if (appPreferenceManager.getUUID() != null)
+            token = token + ":" + appPreferenceManager.getUUID()
+        return iApiService!!.sendTestMSG(body, token)
+
+    }
+
+    fun getMimeType(url: String?): String? {
+        var type: String? = null
+        val extension: String = MimeTypeMap.getFileExtensionFromUrl(url)
+        if (extension != null) {
+            type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
+        }
+        return type
+    }
 
 }
 

@@ -48,7 +48,7 @@ data class CallConnectionSignal(
     var CallSignal: String? = null,
     var WidgetDeviceId: String? = null,
     var Msg91DeviceId: String? = null,
-    var sender: String? = null,
+    var sender_id: String? = null,
     var msg: String? = null,
     var widgetToken: String? = null,
     var CallType: String? = null,
@@ -89,7 +89,7 @@ data class CallConnectionSignal(
         writeString(CallSignal)
         writeString(WidgetDeviceId)
         writeString(Msg91DeviceId)
-        writeString(sender)
+        writeString(sender_id)
         writeString(msg)
         writeString(widgetToken)
         writeString(CallType)

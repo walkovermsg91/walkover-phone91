@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.room.EmptyResultSetException
 import com.google.gson.Gson
+import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.phone91.sdk.data.AppDataManager
 //import com.phone91.sdk.model.QouteObject
@@ -27,7 +28,8 @@ class HomeViewModel : ViewModel() {
 
     var error = MutableLiveData<String>()
     var loading = MutableLiveData<Boolean>()
-    var urlData = MutableLiveData<String>()
+    var urlData = MutableLiveData<JsonObject>()
+    var sendData = MutableLiveData<String>()
     var roomData = MutableLiveData<RoomObject>()
 
     private var compositeDisposable = CompositeDisposable()
@@ -52,9 +54,12 @@ class HomeViewModel : ViewModel() {
 
                 loading.value=false
 
-               if( it.body()?.has("status")!! && it.body()?.get("status")?.asString.equals("Success")){
+               /*if( it.body()?.has("status")!! && it.body()?.get("status")?.asString.equals("Success")){
                    urlData.value= it.body()?.get("body")?.asJsonObject?.get("attachment_url")?.asString
-               }
+               }*/
+                if (it.body()?.has("success")!! && it.body()?.get("success")?.asString.equals("true")) {
+                    urlData.value = it.body()?.get("data")?.asJsonArray?.get(0)?.asJsonObject
+                }
 //                var channelObject: ChannelObject =it
 //                if(channelObject==null) {
 //                    channelObject = ChannelObject(-1,null,null,null,team_id,null,null,null,null/*,false,null*/)
@@ -105,5 +110,38 @@ class HomeViewModel : ViewModel() {
                     error.value=errors.message
                 })
         compositeDisposable.add(loginDisposable!!)
+    }
+    fun sendTextMSG(msg: String) {
+        loading.value = true
+        val loginDisposable = appDataManager?.sendTestMSG(msg)
+            ?.subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe({
+                loading.value = false
+                if (it.body()?.has("success")!!&& it.body()?.get("success")?.asString.equals("true")){
+                    sendData.value = it.body()?.asJsonObject.toString()
+                }
+            }, { errors ->
+                loading.value = false
+                error.value = errors.message
+            })
+        compositeDisposable.add(loginDisposable!!)
+    }
+    fun sendImageMessage(msg: String,msg_type: String, attachment: JsonElement) {
+        loading.value = true
+        val loginDisposable = appDataManager?.sendImageMessage(msg,msg_type,attachment)
+            ?.subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe({
+                loading.value = false
+                if (it.body()?.has("success")!!&& it.body()?.get("success")?.asString.equals("true")){
+                    sendData.value = it.body()?.asJsonObject.toString()
+                }
+            }, { errors ->
+                loading.value = false
+                error.value = errors.message
+            })
+        compositeDisposable.add(loginDisposable!!)
+
     }
 }

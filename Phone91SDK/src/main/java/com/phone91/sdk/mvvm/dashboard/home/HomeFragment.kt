@@ -5,6 +5,7 @@ package com.phone91.sdk.mvvm.dashboard.home
 //import kotlinx.android.synthetic.main.fragment_home_new.*
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
@@ -182,7 +183,8 @@ class HomeFragment : BaseFragment<HomeViewModel>(), PNSendMsgCallback, ChatAdapt
 //            callPubnubSetting()
 //        else
         if(DashboardActivity.isCallEnable && widgetObject?.enable_call!! && pubnubSetting!=null)
-            imgcall.visibility=View.VISIBLE
+            //imgcall.visibility=View.VISIBLE
+            imgcall.visibility=View.GONE
         else
             imgcall.visibility=View.GONE
 
@@ -205,7 +207,8 @@ class HomeFragment : BaseFragment<HomeViewModel>(), PNSendMsgCallback, ChatAdapt
             if (!editMessage.text.toString().trim().equals("")) {
                 if(isNetworkConnected()) {
                     if (pubnubSetting != null)
-                        pubnubSetting?.sendTextMessage(editMessage.text.toString().trim())
+                        //pubnubSetting?.sendTextMessage(editMessage.text.toString().trim())
+                        homeViewModel.sendTextMSG(editMessage.text.toString().trim())
                     else {
                         isFirst = true
                         var connectionSignal = CallConnectionSignal()
@@ -328,9 +331,10 @@ class HomeFragment : BaseFragment<HomeViewModel>(), PNSendMsgCallback, ChatAdapt
 
 
     public fun callPubnubSetting(){
-        if(DashboardActivity.isCallEnable && widgetObject?.enable_call!!)
-            imgcall.visibility=View.VISIBLE
-        else
+        if(DashboardActivity.isCallEnable && widgetObject?.enable_call!!) {
+            //imgcall.visibility=View.VISIBLE
+            imgcall.visibility = View.GONE
+        }else
             imgcall.visibility=View.GONE
         pubnubSetting= PubnubSetting()
         pubnubSetting?.setChannel(appDataManager?.getChannel()!!)
@@ -345,8 +349,8 @@ class HomeFragment : BaseFragment<HomeViewModel>(), PNSendMsgCallback, ChatAdapt
         if(isFirst) {
             isFirst=false
 //            pubnubSetting?.sendTextMessage(editMessage.text.toString().trim())
-
-            pubnubSetting?.sendTextMessage(msg!!)
+            //pubnubSetting?.sendTextMessage(msg!!)
+            homeViewModel.sendTextMSG(msg!!)
 
         }
         if(pubnubSetting!=null)
@@ -464,15 +468,24 @@ class HomeFragment : BaseFragment<HomeViewModel>(), PNSendMsgCallback, ChatAdapt
             }
 
         }
-
+        homeViewModel.sendData.observeForever {
+            editMessage.setText("")
+        }
 
 
         homeViewModel.urlData.observeForever {
 
-            if(!editMessage.text.toString().trim().equals(""))
-                pubnubSetting?.sendImageMessage(editMessage.text.toString().trim(),it)
-            else
-                pubnubSetting?.sendImageMessage(null,it)
+            if(!editMessage.text.toString().trim().equals("")) {
+                //pubnubSetting?.sendImageMessage(editMessage.text.toString().trim(), it)
+                homeViewModel?.sendImageMessage(
+                    editMessage.text.toString().trim(),
+                    "text-attachment",
+                    it
+                )
+            }else {
+                //pubnubSetting?.sendImageMessage(null, it)
+                homeViewModel?.sendImageMessage("", "attachment", it)
+            }
         }
 
 
@@ -493,11 +506,32 @@ class HomeFragment : BaseFragment<HomeViewModel>(), PNSendMsgCallback, ChatAdapt
                 }
             }
 
-            homeViewModel.shareFile(selectedImage!!)
+            if (filteExtension(selectedImage!!)) {
+                homeViewModel.shareFile(selectedImage!!)
+            }else {
+                showError("Selected File Not Allowed")
+                Log.e("fileExtension", "fileExtension false")
+            }
 
         }
     }
-
+    private fun filteExtension(image: String): Boolean {
+        val file = File(image)
+        val extension =
+            arrayOf("aif", "cda", "mid", "midi", "mp3", "mpa", "ogg","oga","ogv","ogx","wav", "wma",
+                "wpl", "7z", "arj", "deb", "pkg", "rar", "rpm", "tar", "gz", "z", "zip", "dmg",
+                "iso", "vcd", "csv", "xml","email", "eml", "emlx", "msg", "oft", "ost", "pst", "vcf",
+                "fnt", "fon", "otf", "ttf", "ai","bmp", "gif", "ico", "jpeg", "jpg", "png", "ps", "psd",
+                "svg", "tif", "tiff", "cer", "cfm","html","ods", "xls", "xlsm", "xlsx", "3g2", "3gp",
+                "avi", "flv", "h264", "m4v", "mkv", "mov", "mp4", "mpg", "mpeg", "rm", "swf", "vob", "wmv",
+                "doc", "docx", "odt", "pdf", "rtf", "tex", "txt", "wpd", "ppt", "pptx", "ppt", "json")
+        for (ext in extension) {
+            if (file.extension.equals(ext)) {
+                return true
+            }
+        }
+        return false
+    }
     private fun captureImageResult(/*selectedImage: Uri?, */data: Intent?) {
         val thumbnail = data?.extras!!.get("data") as Bitmap
         val bytes = ByteArrayOutputStream()
@@ -545,7 +579,8 @@ class HomeFragment : BaseFragment<HomeViewModel>(), PNSendMsgCallback, ChatAdapt
     override fun callButtonStatusListener(callStatusSignal: CallStatusSignal) {
         runOnUiThread {
             if(callStatusSignal.callStatusChanged==CallStatusSignal.ENABLE && widgetObject?.enable_call!! && pubnubSetting!=null)
-                imgcall.visibility=View.VISIBLE
+                //imgcall.visibility=View.VISIBLE
+                imgcall.visibility=View.GONE
             else
                 imgcall.visibility=View.GONE
             // returns an object which
@@ -554,6 +589,7 @@ class HomeFragment : BaseFragment<HomeViewModel>(), PNSendMsgCallback, ChatAdapt
 
     }
 
+    @SuppressLint("NewApi")
     override fun callConnectionListener(callConnectionSignal: CallConnectionSignal) {
         when(callConnectionSignal.CallSignal){
             CallConnectionSignal.PERMIT_CALL_AUDIO->{
@@ -1061,7 +1097,7 @@ class HomeFragment : BaseFragment<HomeViewModel>(), PNSendMsgCallback, ChatAdapt
         connectedCall?.type="CALL"
         connectedCall?.CallSignal=CallConnectionSignal.CALL_END
         connectedCall?.msg="Call has been ended"
-        connectedCall?.sender="client"
+        connectedCall?.sender_id="client"
         pubnubSetting?.sendSignalMessage(connectedCall!!,true)
     }
 

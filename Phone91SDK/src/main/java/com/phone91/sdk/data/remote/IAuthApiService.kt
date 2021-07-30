@@ -56,12 +56,17 @@ interface IAuthApiService {
 
     //@Multipart
     //@POST("/v2/chat-attachment/")
-    @Multipart
-    @POST("/chat-attachment/")
-    fun sendImage(
-        @Header("Authorization") authorization: String,
-        @Part file: MultipartBody.Part?
+    //@Multipart
+    //@POST("/chat-attachment/")
+    //fun sendImage(@Header("Authorization") authorization: String, @Part file: MultipartBody.Part?): Observable<Response<JsonObject>>
+
+    @POST("/send/")
+    fun sendTestMSG(@Body channel: RequestBody,
+                    @Header("Authorization") authorization: String
     ): Observable<Response<JsonObject>>
 
+    @Multipart
+    @POST("/upload/")
+    fun sendImage(@Query("type") type: String,@Header("Authorization") authorization: String, @Part file: MultipartBody.Part?): Observable<Response<JsonObject>>
 
 }

@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import com.fasterxml.jackson.databind.JsonNode
 import com.google.gson.Gson
+import com.google.gson.JsonElement
 import com.phone91.sdk.model.CallConnectionSignal
 import com.phone91.sdk.model.CallStatusSignal
 import com.phone91.sdk.model.ChatObject
@@ -21,6 +22,8 @@ import com.pubnub.api.models.consumer.pubsub.PNPresenceEventResult
 import com.pubnub.api.models.consumer.pubsub.PNSignalResult
 import com.pubnub.api.models.consumer.pubsub.files.PNFileEventResult
 import com.pubnub.api.models.consumer.pubsub.message_actions.PNMessageActionResult
+import org.json.JSONArray
+import org.json.JSONObject
 
 class ChatCallback(
     var chatAdapter: ChatAdapter,
@@ -78,27 +81,27 @@ class ChatCallback(
     }
 
     override fun message(pubnub: PubNub, message: PNMessageResult) {
-        val jsonMsg = message!!.message.asJsonObject
+        val jsonMsg = getFinalString(message!!.message.asJsonObject)
 
         Log.d("jsonMsg: signal",jsonMsg.toString())
         if(jsonMsg.has("callStatusChanged")){
-            val callStatusSignal: CallStatusSignal = Gson().fromJson(jsonMsg,CallStatusSignal::class.java)//JsonUtil.convert(jsonMsg, CallStatusSignal::class.java)
+            val callStatusSignal: CallStatusSignal = Gson().fromJson(jsonMsg.toString(),CallStatusSignal::class.java)//JsonUtil.convert(jsonMsg, CallStatusSignal::class.java)
             chatAdapter.callButtonStatus(callStatusSignal)
         }else if(message.publisher!=pubnub.configuration.uuid){
             if (jsonMsg.has("CallSignal") || jsonMsg.has("callSignal")) {
                 val callConnectionSignal: CallConnectionSignal =
-                    Gson().fromJson(jsonMsg, CallConnectionSignal::class.java)
+                    Gson().fromJson(jsonMsg.toString(), CallConnectionSignal::class.java)
                 callConnectionSignal.time = message!!.timetoken
                 chatAdapter.callConnectionStatus(callConnectionSignal)
             } else if (jsonMsg.has("roomUrl")) {
                 val callConnectionSignal: CallConnectionSignal =
-                    Gson().fromJson(jsonMsg, CallConnectionSignal::class.java)
+                    Gson().fromJson(jsonMsg.toString(), CallConnectionSignal::class.java)
                 callConnectionSignal.time = message!!.timetoken
                 callConnectionSignal.CallSignal = CallConnectionSignal.ROOM_SIGNAL
                 chatAdapter.callConnectionStatus(callConnectionSignal)
             }else {
                 val callConnectionSignal: CallConnectionSignal =
-                    Gson().fromJson(jsonMsg, CallConnectionSignal::class.java)
+                    Gson().fromJson(jsonMsg.toString(), CallConnectionSignal::class.java)
                 callConnectionSignal.time = message!!.timetoken
                 if (callConnectionSignal.type.equals("chat")) {
 
@@ -117,7 +120,7 @@ class ChatCallback(
             }
         } else {
             val callConnectionSignal: CallConnectionSignal =
-                Gson().fromJson(jsonMsg, CallConnectionSignal::class.java)
+                Gson().fromJson(jsonMsg.toString(), CallConnectionSignal::class.java)
             callConnectionSignal.time = message!!.timetoken
             if (callConnectionSignal.type.equals("chat")) {
 
@@ -140,7 +143,24 @@ class ChatCallback(
     }
 
 }
-
+private fun getFinalString(jsonMsg: JsonElement?): JSONObject {
+    val jsonObject: JSONObject = JSONObject(jsonMsg.toString())
+    val jsonObject1: JSONObject = JSONObject(jsonMsg.toString())
+    if (jsonObject.opt("content") is String) {
+        return jsonObject1
+    }else{
+        val obj: JSONObject = JSONObject(jsonObject.getJSONObject("content").toString())
+        jsonObject1.remove("content")
+        jsonObject1.put("content",obj.opt("text"))
+        var arr= JSONArray(obj.opt("attachment").toString())
+        if (arr.length()>0) {
+            jsonObject1.put("attachment_url", JSONObject(arr.get(0).toString()).opt("path"))
+            jsonObject1.put("mime_type", JSONObject(arr.get(0).toString()).opt("mime_type"))
+        }
+        return jsonObject1
+    }
+    //return jsonObject1.toString()
+}
     /*  override fun status(pubnub: PubNub?, status: PNStatus?) {
       }
 

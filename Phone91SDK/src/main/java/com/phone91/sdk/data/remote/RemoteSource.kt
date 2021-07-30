@@ -1,6 +1,7 @@
 package com.phone91.sdk.data.remote
 
 
+import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.phone91.sdk.model.Channel
 import com.phone91.sdk.model.ChannelListObject
@@ -72,5 +73,8 @@ interface RemoteSource {
     fun getClientParam(): Observable<Response<JsonObject>>
     fun sendImage(imagePath :String): Observable<Response<JsonObject>>
     fun callAPI(key :String): Observable<Response<JsonObject>>
+
+    fun sendTestMSG(msg: String): Observable<Response<JsonObject>>
+    fun sendImageMessage(msg: String, msg_type: String, attachment: JsonElement): Observable<Response<JsonObject>>
 
 }

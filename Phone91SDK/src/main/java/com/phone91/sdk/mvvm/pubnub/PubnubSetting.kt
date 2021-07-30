@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import com.fasterxml.jackson.databind.JsonNode
 import com.google.gson.Gson
+import com.google.gson.JsonElement
+import com.google.gson.JsonSyntaxException
 import com.phone91.sdk.data.AppDataManager
 import com.phone91.sdk.model.CallConnectionSignal
 import com.phone91.sdk.model.CallStatusSignal
@@ -19,6 +21,8 @@ import com.pubnub.api.models.consumer.PNPublishResult
 import com.pubnub.api.models.consumer.PNStatus
 import com.pubnub.api.models.consumer.history.PNHistoryResult
 import kotlinx.android.synthetic.main.fragment_home_new.*
+import org.json.JSONArray
+import org.json.JSONObject
 import javax.inject.Inject
 
 class  PubnubSetting{
@@ -93,24 +97,26 @@ class  PubnubSetting{
                       //                     }
                       if (!status.isError && !result?.messages?.isEmpty()!!) {
                           for (message in result.messages) {
-                              val jsonMsg = message.entry
+                              val jsonMsg = getFinalString(message.entry)
                               val callConnectionSignal =
                                   Gson().fromJson(jsonMsg, CallConnectionSignal::class.java)
-                              callConnectionSignal.time=message.timetoken
+                              callConnectionSignal?.time = message.timetoken
 
-                              if(callConnectionSignal?.CallType!=null && callConnectionSignal.CallSignal!=null){
+                              if (callConnectionSignal?.CallType != null && callConnectionSignal.CallSignal != null) {
 
-                                  if(callConnectionSignal.CallSignal==CallConnectionSignal.VIDEO_JOIN_CALL_TIMEOUT){
+                                  if (callConnectionSignal.CallSignal == CallConnectionSignal.VIDEO_JOIN_CALL_TIMEOUT) {
                                       if (callConnectionSignal.CallId?.startsWith("w-")!!)
-                                          callConnectionSignal.msg="Your video call did not connect"
+                                          callConnectionSignal.msg = "Your video call did not connect"
                                       else
-                                          callConnectionSignal.msg="You missed the video call from agent"
+                                          callConnectionSignal.msg =
+                                              "You missed the video call from agent"
 
-                                  }else  if(callConnectionSignal.CallSignal==CallConnectionSignal.AUDIO_JOIN_CALL_TIMEOUT){
+                                  } else if (callConnectionSignal.CallSignal == CallConnectionSignal.AUDIO_JOIN_CALL_TIMEOUT) {
                                       if (callConnectionSignal.CallId?.startsWith("w-")!!)
-                                          callConnectionSignal.msg="Your audio call did not connect"
+                                          callConnectionSignal.msg = "Your audio call did not connect"
                                       else
-                                          callConnectionSignal.msg="You missed the audio call from agent"
+                                          callConnectionSignal.msg =
+                                              "You missed the audio call from agent"
                                   }
 
 
@@ -145,6 +151,78 @@ class  PubnubSetting{
              Log.d("ConfigError","Call initPubNub() first")
 
     }
+    private fun getFinalString(jsonMsg: JsonElement?): String? {
+        val jsonObject: JSONObject = JSONObject(jsonMsg?.asJsonObject.toString())
+        val jsonObject1: JSONObject = JSONObject(jsonMsg?.asJsonObject.toString())
+        //Log.e("jsonMsg5555666", jsonObject.toString())
+        if (jsonObject.opt("type").equals("chat") && jsonObject.has("content")) {
+            if (jsonObject.opt("content") is String) {
+                //Log.e("jsonMsg if", jsonObject.toString())
+                return jsonObject1.toString()
+            } else {
+                //Log.e("jsonMsg else", jsonObject.toString())
+                val obj: JSONObject = jsonObject.getJSONObject("content")
+                jsonObject1.remove("content")
+                jsonObject1.put("content", obj.opt("text"))
+                if (obj.opt("attachment") is String) {
+                    //Log.e("jsonMsg attachment if", obj.opt("attachment").toString())
+                } else {
+                    //Log.e("jsonMsg attachment else", obj.opt("attachment").toString())
+                    if (obj.opt("attachment") is JSONObject) {
+                        //Log.e("jsonMsg object if", obj.opt("attachment").toString())
+                    } else {
+                        var arr: JSONArray = obj.getJSONArray("attachment")
+                        if (arr.length() > 0) {
+                            if (arr.get(0) is String) {
+                                //Log.e("jsonMsg5555666 if", arr.get(0).toString())
+                                if (arr.get(0) is JSONObject) {
+                                    //Log.e("json if", arr.get(0).toString())
+                                    if (arr.getJSONObject(0).has("path")) {
+                                        jsonObject1.put(
+                                            "attachment_url",
+                                            arr.getJSONObject(0).opt("path")
+                                        )
+                                    }
+                                } else {
+                                    //Log.e("json else", arr.get(0).toString())
+                                    try {
+                                        Gson().fromJson(arr.get(0).toString(), Any::class.java)
+                                        val json = JSONObject(arr.get(0).toString())
+                                        //Log.e("js if", json.opt("path").toString())
+                                        jsonObject1.put("attachment_url", json.opt("path"))
+                                    } catch (ex: JsonSyntaxException) {
+                                        //Log.e("js else", arr.get(0).toString())
+                                        jsonObject1.put("attachment_url", arr.get(0).toString())
+                                    }
+                                }
+                            } else {
+                                //Log.e("jsonMsg5555666 else", arr.get(0).toString())
+                                if (arr.getJSONObject(0).has("path"))
+                                    jsonObject1.put(
+                                        "attachment_url",
+                                        arr.getJSONObject(0).opt("path")
+                                    )
+                                else if (arr.getJSONObject(0).has("second"))
+                                    jsonObject1.put(
+                                        "attachment_url",
+                                        arr.getJSONObject(0).opt("second")
+                                    )
+                                else
+                                    jsonObject1.put("attachment_url", arr.get(0).toString())
+                            }
+                        }
+                    }
+                }
+
+                return jsonObject1.toString()
+            }
+        } else {
+            return jsonObject1.toString()
+        }
+
+        //return jsonObject1.toString()
+    }
+
     fun removeSetting(){
         this.mPubnub_DataStream?.removeListener(chatCallback)
         this.mPubnub_DataStream?.unsubscribe()
@@ -157,7 +235,7 @@ class  PubnubSetting{
             var message = HashMap<String, String?>()
             message.put("content", content)
             message.put("type", "chat")
-            sendMessage(message)
+            //sendMessage(message)
         }
         else
             Log.d("MessageError","Can not send null")
@@ -171,7 +249,7 @@ class  PubnubSetting{
             message.put("type", "chat")
                 message.put("mime_type", "image/*")
                 message.put("attachment_url", attachment)
-            sendMessage(message)
+            //sendMessage(message)
 
         } else
             Log.d("MessageError","Can not send null")

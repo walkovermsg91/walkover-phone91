@@ -420,7 +420,7 @@ class DashboardActivityVM  constructor(var appDataManager: AppDataManager) : Vie
                         else
                             channelListData1.value=channelListObject
 
-                        channelListData1.value=channelListObject
+                        //channelListData1.value=channelListObject
                     }
                     else if(value.code()==404){
                         channelListError.value=value.message()

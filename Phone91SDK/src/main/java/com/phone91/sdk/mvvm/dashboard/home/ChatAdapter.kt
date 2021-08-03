@@ -147,8 +147,12 @@ class ChatAdapter(
             else {
                 holder.llYou.visibility == View.VISIBLE
                 holder.txtYouTime.visibility == View.VISIBLE
-                holder.txtYouTime.text =
-                    TimeUtil.covertTimeToText(chatObject.time)//TimeUtil.toDuration(chatObject.time)
+                if (chatObject.time != null && !chatObject.time.toString().equals("-1"))
+                    holder.txtYouTime.text =
+                        TimeUtil.covertTimeToText(chatObject.time)//TimeUtil.toDuration(chatObject.time)
+                else
+                    holder.txtYouTime.visibility == View.GONE
+
                 if (chatObject.content == null)
                     holder.txtYou.visibility = View.GONE
                 else {
@@ -359,12 +363,9 @@ class ChatAdapter(
 //        else if(itemCount==1)
 //             callbackClient.callList()
 
-        (context as Activity?)!!.runOnUiThread {
-
+        (context as Activity?)!!.runOnUiThread(Runnable {
             notifyDataSetChanged()
-
-
-        }
+        })
 
 
     }

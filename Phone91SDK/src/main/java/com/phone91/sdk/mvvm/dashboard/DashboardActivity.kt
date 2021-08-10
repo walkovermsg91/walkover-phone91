@@ -542,7 +542,13 @@ class DashboardActivity : BaseActivity<DashboardActivityVM>(), LogoutChain
             if (widgetObject?.teams != null && widgetObject?.teams?.size!! > 0) {
                 channelLits = channelListObject?.channels?.filter { listObject ->
 
-                    widgetObject?.teams?.any { listObject?.team_id?.equals(it.id)!! }!!
+                    widgetObject?.teams?.any {
+                        if (listObject?.team_id == null) {
+                            true
+                        } else {
+                            listObject?.team_id?.equals(it.id)!!
+                        }
+                    }!!
                 } as ArrayList<Channel>
 
 
@@ -775,9 +781,11 @@ class DashboardActivity : BaseActivity<DashboardActivityVM>(), LogoutChain
             } else if (channelLits?.any {
                     chnl = it
 //                    it.team_id==widgetObject?.teams?.get(pos)?.id
-
-                    it.team_id?.equals(widgetObject?.teams?.get(pos)?.id)!!
-
+                    if (it.team_id == null) {
+                        true
+                    } else {
+                        it.team_id?.equals(widgetObject?.teams?.get(pos)?.id)!!
+                    }
                 }!!) {
                 appDataManager?.setChatId(chnl?.id.toString());
                 appDataManager?.setChannel(chnl?.channel!!);

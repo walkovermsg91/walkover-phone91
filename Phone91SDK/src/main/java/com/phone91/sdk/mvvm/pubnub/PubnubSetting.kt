@@ -102,7 +102,7 @@ class  PubnubSetting{
                                   Gson().fromJson(jsonMsg, CallConnectionSignal::class.java)
                               callConnectionSignal?.time = message.timetoken
 
-                              if (callConnectionSignal?.CallType != null && callConnectionSignal.CallSignal != null) {
+                              if (callConnectionSignal?.CallType != null||callConnectionSignal?.type!=null && callConnectionSignal.CallSignal != null) {
 
                                   if (callConnectionSignal.CallSignal == CallConnectionSignal.VIDEO_JOIN_CALL_TIMEOUT) {
                                       if (callConnectionSignal.CallId?.startsWith("w-")!!)
@@ -216,6 +216,23 @@ class  PubnubSetting{
 
                 return jsonObject1.toString()
             }
+        }
+        else if (jsonObject.opt("type").equals("whatsapp")||jsonObject.opt("type").equals("RCS")||
+            jsonObject.opt("type").equals("Notes") && jsonObject.has("content")) {
+            val obj: JSONObject = jsonObject.getJSONObject("content")
+            jsonObject1.remove("content")
+            if (obj.has("text")) {
+                jsonObject1.put("content", obj.opt("text"))
+            } else if (obj.has("caption")) {
+                jsonObject1.put("content", obj.opt("caption"))
+            }else{
+                jsonObject1.put("content", "")
+            }
+            if (obj.has("file_url"))
+                jsonObject1.put("attachment_url", obj.opt("file_url"))
+            else
+                jsonObject1.put("attachment_url","")
+            return jsonObject1.toString()
         } else {
             return jsonObject1.toString()
         }

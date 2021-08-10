@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.fasterxml.jackson.databind.JsonNode
 import com.google.gson.Gson
 import com.google.gson.JsonElement
+import com.google.gson.JsonSyntaxException
 import com.phone91.sdk.model.CallConnectionSignal
 import com.phone91.sdk.model.CallStatusSignal
 import com.phone91.sdk.model.ChatObject
@@ -144,22 +145,110 @@ class ChatCallback(
 
 }
 private fun getFinalString(jsonMsg: JsonElement?): JSONObject {
-    val jsonObject: JSONObject = JSONObject(jsonMsg.toString())
-    val jsonObject1: JSONObject = JSONObject(jsonMsg.toString())
-    if (jsonObject.opt("content") is String) {
-        return jsonObject1
-    }else{
-        val obj: JSONObject = JSONObject(jsonObject.getJSONObject("content").toString())
-        jsonObject1.remove("content")
-        jsonObject1.put("content",obj.opt("text"))
-        var arr= JSONArray(obj.opt("attachment").toString())
-        if (arr.length()>0) {
-            jsonObject1.put("attachment_url", JSONObject(arr.get(0).toString()).opt("path"))
-            jsonObject1.put("mime_type", JSONObject(arr.get(0).toString()).opt("mime_type"))
+    val jsonObject: JSONObject = JSONObject(jsonMsg?.asJsonObject.toString())
+    val jsonObject1: JSONObject = JSONObject(jsonMsg?.asJsonObject.toString())
+    //Log.e("jsonMsg5555666", jsonObject.toString())
+    if (jsonObject.opt("type").equals("chat") && jsonObject.has("content")) {
+        if (jsonObject.opt("content") is String) {
+            return jsonObject1
         }
+        else {
+            val obj: JSONObject = jsonObject.getJSONObject("content")
+            jsonObject1.remove("content")
+            jsonObject1.put("content", obj.opt("text"))
+            if (obj.opt("attachment") is String) {
+            } else {
+                if (obj.opt("attachment") is JSONObject) {
+                } else {
+                    var arr: JSONArray = obj.getJSONArray("attachment")
+                    if (arr.length() > 0) {
+                        if (arr.get(0) is String) {
+                            if (arr.get(0) is JSONObject) {
+                                if (arr.getJSONObject(0).has("path")) {
+                                    jsonObject1.put(
+                                        "attachment_url",
+                                        arr.getJSONObject(0).opt("path")
+                                    )
+                                }
+                            } else {
+                                try {
+                                    Gson().fromJson(arr.get(0).toString(), Any::class.java)
+                                    val json = JSONObject(arr.get(0).toString())
+                                    jsonObject1.put("attachment_url", json.opt("path"))
+                                } catch (ex: JsonSyntaxException) {
+                                    jsonObject1.put("attachment_url", arr.get(0).toString())
+                                }
+                            }
+                        } else {
+                            if (arr.getJSONObject(0).has("path"))
+                                jsonObject1.put(
+                                    "attachment_url",
+                                    arr.getJSONObject(0).opt("path")
+                                )
+                            else if (arr.getJSONObject(0).has("second"))
+                                jsonObject1.put(
+                                    "attachment_url",
+                                    arr.getJSONObject(0).opt("second")
+                                )
+                            else
+                                jsonObject1.put("attachment_url", arr.get(0).toString())
+                        }
+                    }
+                }
+            }
+
+            return jsonObject1
+        }
+    }
+    else if(jsonObject.opt("type").equals("whatsapp")&& jsonObject.has("content")){
+        val obj: JSONObject = jsonObject.getJSONObject("content")
+        jsonObject1.remove("content")
+        if (obj.has("text")) {
+            jsonObject1.put("content", obj.opt("text"))
+        } else if (obj.has("caption")) {
+            jsonObject1.put("content", obj.opt("caption"))
+        }else{
+            jsonObject1.put("content", "")
+        }
+        if (obj.has("file_url"))
+            jsonObject1.put("attachment_url", obj.opt("file_url"))
+        else
+            jsonObject1.put("attachment_url","")
+        return jsonObject1
+    } else if(jsonObject.opt("type").equals("Notes")||jsonObject.opt("type").equals("notes")||jsonObject.opt("type").equals("note") && jsonObject.has("content")){
+        val obj: JSONObject = jsonObject.getJSONObject("content")
+        jsonObject1.remove("content")
+        if (obj.has("text")) {
+            jsonObject1.put("content", obj.opt("text"))
+        } else if (obj.has("caption")) {
+            jsonObject1.put("content", obj.opt("caption"))
+        }else{
+            jsonObject1.put("content", "")
+        }
+        if (obj.has("file_url"))
+            jsonObject1.put("attachment_url", obj.opt("file_url"))
+        else
+            jsonObject1.put("attachment_url","")
         return jsonObject1
     }
-    //return jsonObject1.toString()
+    else if (jsonObject.opt("type").equals("RCS")||jsonObject.opt("type").equals("rcs")&& jsonObject.has("content")) {
+        val obj: JSONObject = jsonObject.getJSONObject("content")
+        jsonObject1.remove("content")
+        if (obj.has("text")) {
+            jsonObject1.put("content", obj.opt("text"))
+        } else if (obj.has("caption")) {
+            jsonObject1.put("content", obj.opt("caption"))
+        }else{
+            jsonObject1.put("content", "")
+        }
+        if (obj.has("file_url"))
+            jsonObject1.put("attachment_url", obj.opt("file_url"))
+        else
+            jsonObject1.put("attachment_url","")
+        return jsonObject1
+    } else {
+        return jsonObject1
+    }
 }
     /*  override fun status(pubnub: PubNub?, status: PNStatus?) {
       }

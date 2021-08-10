@@ -157,26 +157,20 @@ class  PubnubSetting{
         //Log.e("jsonMsg5555666", jsonObject.toString())
         if (jsonObject.opt("type").equals("chat") && jsonObject.has("content")) {
             if (jsonObject.opt("content") is String) {
-                //Log.e("jsonMsg if", jsonObject.toString())
                 return jsonObject1.toString()
-            } else {
-                //Log.e("jsonMsg else", jsonObject.toString())
+            }
+            else {
                 val obj: JSONObject = jsonObject.getJSONObject("content")
                 jsonObject1.remove("content")
                 jsonObject1.put("content", obj.opt("text"))
                 if (obj.opt("attachment") is String) {
-                    //Log.e("jsonMsg attachment if", obj.opt("attachment").toString())
                 } else {
-                    //Log.e("jsonMsg attachment else", obj.opt("attachment").toString())
                     if (obj.opt("attachment") is JSONObject) {
-                        //Log.e("jsonMsg object if", obj.opt("attachment").toString())
                     } else {
                         var arr: JSONArray = obj.getJSONArray("attachment")
                         if (arr.length() > 0) {
                             if (arr.get(0) is String) {
-                                //Log.e("jsonMsg5555666 if", arr.get(0).toString())
                                 if (arr.get(0) is JSONObject) {
-                                    //Log.e("json if", arr.get(0).toString())
                                     if (arr.getJSONObject(0).has("path")) {
                                         jsonObject1.put(
                                             "attachment_url",
@@ -184,19 +178,15 @@ class  PubnubSetting{
                                         )
                                     }
                                 } else {
-                                    //Log.e("json else", arr.get(0).toString())
                                     try {
                                         Gson().fromJson(arr.get(0).toString(), Any::class.java)
                                         val json = JSONObject(arr.get(0).toString())
-                                        //Log.e("js if", json.opt("path").toString())
                                         jsonObject1.put("attachment_url", json.opt("path"))
                                     } catch (ex: JsonSyntaxException) {
-                                        //Log.e("js else", arr.get(0).toString())
                                         jsonObject1.put("attachment_url", arr.get(0).toString())
                                     }
                                 }
                             } else {
-                                //Log.e("jsonMsg5555666 else", arr.get(0).toString())
                                 if (arr.getJSONObject(0).has("path"))
                                     jsonObject1.put(
                                         "attachment_url",
@@ -217,8 +207,38 @@ class  PubnubSetting{
                 return jsonObject1.toString()
             }
         }
-        else if (jsonObject.opt("type").equals("whatsapp")||jsonObject.opt("type").equals("RCS")||
-            jsonObject.opt("type").equals("Notes") && jsonObject.has("content")) {
+        else if(jsonObject.opt("type").equals("whatsapp")&& jsonObject.has("content")){
+            val obj: JSONObject = jsonObject.getJSONObject("content")
+            jsonObject1.remove("content")
+            if (obj.has("text")) {
+                jsonObject1.put("content", obj.opt("text"))
+            } else if (obj.has("caption")) {
+                jsonObject1.put("content", obj.opt("caption"))
+            }else{
+                jsonObject1.put("content", "")
+            }
+            if (obj.has("file_url"))
+                jsonObject1.put("attachment_url", obj.opt("file_url"))
+            else
+                jsonObject1.put("attachment_url","")
+            return jsonObject1.toString()
+        } else if(jsonObject.opt("type").equals("Notes")||jsonObject.opt("type").equals("notes")||jsonObject.opt("type").equals("note") && jsonObject.has("content")){
+            val obj: JSONObject = jsonObject.getJSONObject("content")
+            jsonObject1.remove("content")
+            if (obj.has("text")) {
+                jsonObject1.put("content", obj.opt("text"))
+            } else if (obj.has("caption")) {
+                jsonObject1.put("content", obj.opt("caption"))
+            }else{
+                jsonObject1.put("content", "")
+            }
+            if (obj.has("file_url"))
+                jsonObject1.put("attachment_url", obj.opt("file_url"))
+            else
+                jsonObject1.put("attachment_url","")
+            return jsonObject1.toString()
+        }
+        else if (jsonObject.opt("type").equals("RCS")||jsonObject.opt("type").equals("rcs")&& jsonObject.has("content")) {
             val obj: JSONObject = jsonObject.getJSONObject("content")
             jsonObject1.remove("content")
             if (obj.has("text")) {
@@ -236,8 +256,6 @@ class  PubnubSetting{
         } else {
             return jsonObject1.toString()
         }
-
-        //return jsonObject1.toString()
     }
 
     fun removeSetting(){

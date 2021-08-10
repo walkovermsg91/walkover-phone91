@@ -90,12 +90,12 @@ class ChatAdapter(
             holder.txtSignal.text = chatObject.msg
             holder.txtTime.text = TimeUtil.covertTimeToText(chatObject.time)
 
-        }else if (chatObject.type!=null&&!chatObject.type.toString().equals("chat")){
+        }else if (chatObject.type!=null&&chatObject.type.toString().equals("feedback")){
             holder.llYou.visibility = View.GONE
             holder.llMe.visibility = View.GONE
             holder.llDetail.visibility = View.GONE
             holder.llCallMsg.visibility = View.GONE
-        } else {
+        }else {
             holder.llYou.visibility = View.VISIBLE
             holder.llMe.visibility = View.VISIBLE
             holder.llDetail.visibility = View.GONE

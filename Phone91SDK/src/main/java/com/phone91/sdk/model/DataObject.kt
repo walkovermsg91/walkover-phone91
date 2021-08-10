@@ -11,18 +11,17 @@ import android.os.Parcelable
 //                        "subkey":"sub-c-41ea6378-7d3f-11e9-945c-2ea711aa6b65","authkey":"a6cfa71a1c774a5ab08e168fe17a0127"}
 
 //{"id":1587385161501,"content":"cccc","sender":"richa","type":"chat","attachment_url":"","mime_type":""}
-data class DataObject(var type: String? = null,
-                      var notify: String?=null
+data class DataObject(var type: String? = null//, var notify: String?=null
                       ) : Parcelable {
     constructor(parcel: Parcel) : this(
-        parcel.readString(),
         parcel.readString()
+        //, parcel.readString()
     ) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(type)
-        parcel.writeString(notify)
+        //parcel.writeString(notify)
     }
 
     override fun describeContents(): Int {
